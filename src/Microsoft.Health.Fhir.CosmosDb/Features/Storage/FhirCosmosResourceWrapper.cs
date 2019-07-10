@@ -9,6 +9,7 @@ using EnsureThat;
 using Microsoft.Health.CosmosDb.Features.Storage;
 using Microsoft.Health.Fhir.Core.Features.Persistence;
 using Microsoft.Health.Fhir.Core.Features.Search;
+using Microsoft.Health.Fhir.Core.Models;
 using Microsoft.Health.Fhir.CosmosDb.Features.Storage.Search;
 using Newtonsoft.Json;
 
@@ -87,6 +88,12 @@ namespace Microsoft.Health.Fhir.CosmosDb.Features.Storage
         [JsonProperty(KnownDocumentProperties.PartitionKey)]
         public string PartitionKey => ToResourceKey().ToPartitionKey();
 
+        [JsonProperty(KnownDocumentProperties.Resource)]
+        public object Resource
+        {
+            get => GetResource();
+        }
+
         internal string GetETagOrVersion()
         {
             // An ETag is used as the Version when the Version property is not specified
@@ -97,6 +104,16 @@ namespace Microsoft.Health.Fhir.CosmosDb.Features.Storage
             }
 
             return base.Version;
+        }
+
+        internal object GetResource()
+        {
+            if (RawResource.Format == FhirResourceFormat.Json)
+            {
+                return JsonConvert.DeserializeObject(RawResource.Data);
+            }
+
+            return null;
         }
     }
 }

@@ -15,6 +15,8 @@ namespace Microsoft.Health.CosmosDb.Features.Storage
 
         public const string PartitionKey = "partitionKey";
 
+        public const string Resource = "resource";
+
         public const string SelfLink = "_self";
 
         public const string Timestamp = "_ts";
